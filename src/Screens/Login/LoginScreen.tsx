@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import {
   View,
   Text,
@@ -15,6 +15,7 @@ import {
 } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { LoginScreenController } from './LoginScreenController';
+import OtpVerifyModal from '../OtpVerify/OtpVerifyModal';
 const LOGO = require('../../assets/logo.png');
 
 export default function LoginScreen() {
@@ -28,6 +29,9 @@ export default function LoginScreen() {
     showCountrySelector,
     setShowCountrySelector,
     toggleCountrySelector,
+    onPressVerify,
+    otpVisible,
+    handleCloseModal,
   } = LoginScreenController();
 
   const selectCountry = (code: string) => {
@@ -35,12 +39,13 @@ export default function LoginScreen() {
     setShowCountrySelector(false);
   };
   const HEADER_UNDER_STATUSBAR_HEIGHT = 2;
-
+  const phoneInputRef = useRef<TextInput>(null);
   const COUNTRY_LIST = [
     { id: 'IN', name: 'India', code: '+91', flag: '🇮🇳' },
     { id: 'US', name: 'USA', code: '+1', flag: '🇺🇸' },
     { id: 'UK', name: 'UK', code: '+44', flag: '🇬🇧' },
   ];
+  const fullPhone = `${countryCode} ${phone}`;
 
   return (
     <SafeAreaProvider>
@@ -96,6 +101,7 @@ export default function LoginScreen() {
                 </TouchableOpacity>
 
                 <TextInput
+                  ref={phoneInputRef}
                   style={styles.phoneInput}
                   placeholder="Enter phone number"
                   placeholderTextColor="#9AA0A6"
@@ -134,7 +140,7 @@ export default function LoginScreen() {
 
             <View style={styles.bottom}>
               <TouchableOpacity
-                onPress={handleVerifyOtp}
+                onPress={onPressVerify}
                 disabled={!isValidPhone}
                 activeOpacity={isValidPhone ? 0.7 : 1}
                 style={[
@@ -171,6 +177,15 @@ export default function LoginScreen() {
               </View>
             </View>
           </ScrollView>
+          <OtpVerifyModal
+            visible={otpVisible}
+            phoneNumber={fullPhone}
+            onClose={handleCloseModal}
+            onSubmit={code => console.log('OTP:', code)}
+            onResend={() => console.log('Resend')}
+            onCall={() => console.log('Call')}
+            onEditPhone={handleCloseModal}
+          />
         </KeyboardAvoidingView>
       </SafeAreaView>
     </SafeAreaProvider>

@@ -6,6 +6,7 @@ const phoneDigitsOnly = (s: string) => s.replace(/\D/g, '');
 export const LoginScreenController = (): LoginControllerReturn => {
   const [phone, setPhoneRaw] = useState<string>('');
   const [countryCode, setCountryCode] = useState<string>('+91');
+  const [otpVisible, setOtpVisible] = useState(false);
   const [showCountrySelector, setShowCountrySelector] =
     useState<boolean>(false);
 
@@ -25,6 +26,16 @@ export const LoginScreenController = (): LoginControllerReturn => {
     console.log('Request OTP for:', `${countryCode}${phone}`);
   }, [countryCode, phone, isValidPhone]);
 
+  const onPressVerify = () => {
+    if (!isValidPhone) return;
+    handleVerifyOtp();
+    setOtpVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setOtpVisible(false);
+  };
+
   return {
     phone,
     setPhone,
@@ -35,5 +46,8 @@ export const LoginScreenController = (): LoginControllerReturn => {
     showCountrySelector,
     setShowCountrySelector,
     toggleCountrySelector,
+    onPressVerify,
+    otpVisible,
+    handleCloseModal,
   };
 };

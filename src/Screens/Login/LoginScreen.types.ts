@@ -9,4 +9,7 @@ export interface LoginControllerReturn {
   showCountrySelector: boolean;
   setShowCountrySelector: (val: boolean) => void;
   toggleCountrySelector: () => void;
+  onPressVerify: () => void;
+  otpVisible: boolean;
+  handleCloseModal: () => void;
 }
